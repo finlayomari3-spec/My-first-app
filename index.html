@@ -725,3 +725,150 @@ const file = document.getElementById("media").files[0];
 if (!validatePostText(caption.value)) return;
 
 if (file && !validateUpload(file)) return;
+// STRIPON PROFILE FUNCTIONS
+
+function getProfileData(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveProfileData(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+// Open profile sections
+function openProfileTab(tab) {
+  document.querySelector(".profile-header").style.display = "none";
+  document.querySelector(".profile-stats").style.display = "none";
+
+  document.querySelectorAll(".profile-heading, .profile-menu")
+    .forEach(el => el.style.display = "none");
+
+  const panel = document.getElementById("profileTab");
+  panel.style.display = "block";
+
+  const titles = {
+    uploads: "🎬 My uploads",
+    downloads: "⬇️ Downloads",
+    history: "🕘 Watch history",
+    liked: "❤️ Liked videos",
+    saved: "🔖 Saved videos",
+    playlists: "📂 My playlists"
+  };
+
+  document.getElementById("profileTabTitle").textContent =
+    titles[tab] || "My content";
+
+  const key = "stripon_" + tab;
+  const data = getProfileData(key);
+  const content = document.getElementById("profileTabContent");
+
+  content.replaceChildren();
+
+  if (tab === "downloads") {
+    const note = document.createElement("p");
+    note.textContent =
+      "Your permitted offline video downloads will appear here.";
+    content.appendChild(note);
+  }
+
+  if (data.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "profile-item";
+    empty.textContent = "Nothing here yet. Your content will appear here.";
+    content.appendChild(empty);
+    return;
+  }
+
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "profile-item";
+    div.textContent = item.title || item;
+    content.appendChild(div);
+  });
+}
+
+function closeProfileTab() {
+  document.querySelector(".profile-header").style.display = "block";
+  document.querySelector(".profile-stats").style.display = "flex";
+
+  document.querySelectorAll(".profile-heading, .profile-menu")
+    .forEach(el => el.style.display = "block");
+
+  document.getElementById("profileTab").style.display = "none";
+}
+
+// Edit username
+function editProfile() {
+  const oldName = document.getElementById("profileName").textContent;
+  const name = prompt("Enter your STRIPON display name:", oldName);
+
+  if (!name || !name.trim()) return;
+
+  if (name.trim().length > 40) {
+    alert("Name must be 40 characters or less.");
+    return;
+  }
+
+  localStorage.setItem("stripon_name", name.trim());
+  document.getElementById("profileName").textContent = name.trim();
+}
+
+// Restore profile name
+const savedName = localStorage.getItem("stripon_name");
+
+if (savedName) {
+  document.getElementById("profileName").textContent = savedName;
+}
+
+// Save a video to watch later
+function saveVideo(title) {
+  const data = getProfileData("stripon_saved");
+
+  if (!data.some(item => item.title === title)) {
+    data.push({title: title});
+    saveProfileData("stripon_saved", data);
+    alert("Video saved!");
+  } else {
+    alert("Already saved!");
+  }
+}
+
+// Add watched video to history
+function addHistory(title) {
+  let data = getProfileData("stripon_history");
+
+  data = data.filter(item => item.title !== title);
+  data.unshift({title: title});
+
+  saveProfileData("stripon_history", data.slice(0,100));
+}
+
+// Save liked videos
+function saveLikedVideo(title) {
+  const data = getProfileData("stripon_liked");
+
+  if (!data.some(item => item.title === title)) {
+    data.push({title: title});
+    saveProfileData("stripon_liked", data);
+  }
+}
+
+// Download an authorised video file
+function downloadVideo(url, filename) {
+  try {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.rel = "noopener";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    alert("Download unavailable.");
+  }
+}
+el.style.displaypanel.style.display
