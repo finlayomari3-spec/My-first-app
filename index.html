@@ -648,3 +648,73 @@ function searchContent() {
 </body>
   </html>
       
+<title>STRIPON</title><div class="logo">▶ STRIPON</div>const caption = document.getElementById("caption");
+const file = document.getElementById("media").files[0];
+
+if (!validatePostText(caption.value)) return;
+
+if (file && !validateUpload(file)) return;
+/* VIEWTUBE SECURITY STARTER */
+
+// 1. Limit post text
+function validatePostText(text) {
+  if (text.length > 1000) {
+    alert("Your post is too long. Maximum 1000 characters.");
+    return false;
+  }
+
+  return true;
+}
+
+// 2. Validate uploaded files
+function validateUpload(file) {
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "video/mp4",
+    "video/webm"
+  ];
+
+  const maxSize = 20 * 1024 * 1024;
+
+  if (!allowedTypes.includes(file.type)) {
+    alert("This file format is not allowed.");
+    return false;
+  }
+
+  if (file.size > maxSize) {
+    alert("File is too large. Maximum size is 20MB.");
+    return false;
+  }
+
+  return true;
+}
+
+// 3. Protect text displayed on the page
+function safeText(element, text) {
+  element.textContent = String(text);
+}
+
+// 4. Prevent empty usernames
+function validateUsername(username) {
+  const pattern = /^[a-zA-Z0-9_]{3,20}$/;
+
+  if (!pattern.test(username)) {
+    alert("Username must be 3-20 characters.");
+    return false;
+  }
+
+  return true;
+}
+
+// 5. Check connection security
+function checkConnection() {
+  if (location.protocol !== "https:") {
+    console.warn("Use HTTPS for ViewTube.");
+  }
+}
+
+checkConnection();
+</script>
