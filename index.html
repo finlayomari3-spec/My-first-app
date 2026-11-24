@@ -872,3 +872,171 @@ function downloadVideo(url, filename) {
   }
 }
 el.style.displaypanel.style.display
+-- STRIPON USER PROFILES
+
+create table public.profiles (
+  id uuid primary key references auth.users(id)
+    on delete cascade,
+
+  username text unique not null,
+  bio text default '',
+  avatar_url text,
+  created_at timestamptz default now()
+);
+
+-- Enable database security
+alter table public.profiles
+enable row level security;
+
+-- Allow users to view public profiles
+create policy "Profiles are viewable"
+on public.profiles
+for select
+to anon, authenticated
+using (true);
+
+-- Users can create their own profile
+create policy "Users create own profile"
+on public.profiles
+for insert
+to authenticated
+with check (auth.uid() = id);
+
+-- Users can edit only their own profile
+create policy "Users edit own profile"
+on public.profiles
+for update
+to authenticated
+using (auth.uid() = id)
+with check (auth.uid() = id);
+
+-- Grant appropriate access
+grant select on public.profiles to anon;
+grant select, insert, update
+on public.profiles to authenticated;
+public.profiles
+/* STRIPON PROFILE DESIGN */
+
+.profile-header {
+  text-align: center;
+  padding: 25px 12px;
+  background: linear-gradient(145deg,#202b43,#111522);
+  border-radius: 18px;
+}
+
+.profile-avatar {
+  width: 95px;
+  height: 95px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  background: linear-gradient(135deg,#ff3155,#713caa);
+  border: 3px solid #fff;
+}
+
+.profile-edit {
+  background: #ff3155;
+  color: white;
+  border: none;
+  padding: 11px 25px;
+  border-radius: 22px;
+  margin-top: 15px;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px 5px;
+  margin: 14px 0;
+  background: #171d2a;
+  border-radius: 14px;
+}
+
+.profile-stats div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-stats strong {
+  font-size: 21px;
+}
+
+.profile-stats span {
+  color: #aab0bd;
+  font-size: 12px;
+}
+
+.profile-heading {
+  margin: 23px 0 12px;
+}
+
+.profile-menu {
+  background: #171d2a;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.profile-menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 14px;
+  background: transparent;
+  color: white;
+  border: none;
+  border-bottom: 1px solid #303747;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-menu button > span:first-child {
+  font-size: 23px;
+}
+
+.profile-menu button > span:last-child {
+  margin-left: auto;
+  color: #929bad;
+  font-size: 22px;
+}
+
+.profile-menu small {
+  display: block;
+  color: #929bad;
+  margin-top: 5px;
+}
+
+.profile-tab {
+  display: none;
+  margin-top: 20px;
+  background: #171d2a;
+  padding: 17px;
+  border-radius: 14px;
+}
+
+.profile-tab button {
+  background: #30394a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.profile-tab h2 {
+  margin-bottom: 18px;
+}
+
+.profile-item {
+  padding: 13px;
+  border-bottom: 1px solid #303747;
+}
+
+.profile-item button {
+  margin-top: 10px;
+  background: #ff3155;
+}
