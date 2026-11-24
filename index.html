@@ -718,3 +718,10 @@ function checkConnection() {
 
 checkConnection();
 </script>
+<title>STRIPON</title>
+const caption = document.getElementById("caption");
+const file = document.getElementById("media").files[0];
+
+if (!validatePostText(caption.value)) return;
+
+if (file && !validateUpload(file)) return;
