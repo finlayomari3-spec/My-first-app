@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ViewTube</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  background: #f9f9f9;
+  font-family: Arial;
+}
+
+header {
+  background: #fff;
+  padding: 18px;
+  font-size: 25px;
+  font-weight: bold;
+  color: red;
+}
+
+input {
+  padding: 12px;
+  width: 85%;
+  margin: 15px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+}
+
+.video {
+  background: white;
+  margin: 15px;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.video iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>▶ ViewTube</header>
+
+<input id="search" placeholder="Search videos..."
+oninput="searchVideos()">
+
+<div id="videos">
+
+<div class="video">
+<h3>Welcome to ViewTube</h3>
+<p>Your video platform starts here!</p>
+</div>
+
+<div class="video">
+<h3>Sample video</h3>
+<iframe src="https://www.youtube.com/embed/ScMzIvxBSi4"
+allowfullscreen></iframe>
+</div>
+
+</div>
+
+<script>
+function searchVideos() {
+ let query = document.getElementById("search").value.toLowerCase();
+ let videos = document.querySelectorAll(".video");
+
+ videos.forEach(video => {
+   video.style.display =
+   video.innerText.toLowerCase().includes(query)
+   ? "block" : "none";
+ });
+}
+</script>
+
+</body>
+  </html>
