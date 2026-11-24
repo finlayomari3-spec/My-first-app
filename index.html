@@ -80,3 +80,571 @@ function searchVideos() {
 
 </body>
   </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViewTube</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #090b10;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding-bottom: 85px;
+}
+
+header {
+  padding: 18px;
+  background: #10131c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.logo {
+  color: #ff3155;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.search {
+  background: #202532;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  width: 48%;
+}
+
+.section {
+  display: none;
+  padding: 16px;
+}
+
+.section.active {
+  display: block;
+}
+
+h2 {
+  margin: 18px 0 12px;
+}
+
+h3 {
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+p {
+  color: #aab0bd;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.hero {
+  height: 210px;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  background: linear-gradient(135deg,#5a183c,#172c54,#080b15);
+  margin-bottom: 22px;
+}
+
+.hero button, .action {
+  background: #ff3155;
+  color: white;
+  border: none;
+  padding: 11px 17px;
+  border-radius: 20px;
+  margin-top: 12px;
+  width: fit-content;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 13px;
+}
+
+.card {
+  background: #171b26;
+  border-radius: 12px;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+.poster {
+  height: 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  background: linear-gradient(145deg,#334d70,#71334e);
+}
+
+.card h3, .card p {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.shorts {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+
+.short {
+  height: 300px;
+  border-radius: 14px;
+  background: linear-gradient(160deg,#4d246b,#151c38,#111);
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 13px;
+}
+
+.postbox {
+  background: #171b26;
+  padding: 15px;
+  border-radius: 14px;
+  margin-top: 15px;
+}
+
+textarea {
+  width: 100%;
+  height: 90px;
+  background: #252a36;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  resize: vertical;
+}
+
+input[type=file] {
+  margin-top: 15px;
+  max-width: 100%;
+}
+
+.game {
+  background: #171b26;
+  padding: 18px;
+  margin-bottom: 12px;
+  border-radius: 13px;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #ff3155;
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+  margin: 20px auto;
+}
+
+.profile {
+  text-align: center;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 25px 0;
+}
+
+.stats strong {
+  display: block;
+  font-size: 20px;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: #151923;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 10;
+  border-top: 1px solid #303543;
+}
+
+nav button {
+  color: #aeb5c3;
+  background: none;
+  border: none;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+nav button span {
+  font-size: 21px;
+}
+
+nav button.selected {
+  color: #ff3155;
+}
+
+#preview {
+  max-width: 100%;
+  margin-top: 12px;
+  border-radius: 10px;
+}
+
+.post {
+  background: #171b26;
+  padding: 15px;
+  margin-top: 12px;
+  border-radius: 12px;
+}
+
+@media(min-width:650px) {
+  .grid { grid-template-columns: repeat(4,1fr); }
+  .shorts { grid-template-columns: repeat(4,1fr); }
+  .section { max-width: 950px; margin: auto; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">▶ ViewTube</div>
+  <input class="search" id="search"
+    placeholder="Search..." oninput="searchContent()">
+</header>
+
+<!-- 1. ALL SECTION -->
+<section id="all" class="section active">
+
+  <div class="hero">
+    <p>WELCOME TO VIEWTUBE</p>
+    <h2>Discover Entertainment</h2>
+    <p>Movies, videos and entertainment in one place.</p>
+    <button onclick="showSection('shorts')">Explore Shorts</button>
+  </div>
+
+  <h2>Trending Movies</h2>
+
+  <div class="grid" id="movieGrid">
+    <div class="card">
+      <div class="poster">🎬</div>
+      <h3>Action World</h3>
+      <p>Action • 2026</p>
+    </div>
+
+    <div class="card">
+      <div class="poster">🚀</div>
+      <h3>Space Journey</h3>
+      <p>Sci-Fi • 2026</p>
+    </div>
+
+    <div class="card">
+      <div class="poster">🕵️</div>
+      <h3>The Mystery</h3>
+      <p>Thriller • 2026</p>
+    </div>
+
+    <div class="card">
+      <div class="poster">❤️</div>
+      <h3>Love Story</h3>
+      <p>Drama • 2026</p>
+    </div>
+  </div>
+
+  <h2>Recommended</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="poster">🌍</div>
+      <h3>Adventure Life</h3>
+      <p>Adventure</p>
+    </div>
+    <div class="card">
+      <div class="poster">🏆</div>
+      <h3>Champions</h3>
+      <p>Sports</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. SHORTS SECTION -->
+<section id="shorts" class="section">
+  <h2>Short Videos</h2>
+  <p>Discover short entertainment videos.</p>
+
+  <div class="shorts">
+    <div class="short">
+      <h3>Funny Moments 😂</h3>
+      <p>Video creator</p>
+      <button class="action" onclick="like(this)">♡ Like</button>
+    </div>
+
+    <div class="short">
+      <h3>Music Vibes 🎵</h3>
+      <p>Music creator</p>
+      <button class="action" onclick="like(this)">♡ Like</button>
+    </div>
+
+    <div class="short">
+      <h3>Adventure 🌍</h3>
+      <p>Travel creator</p>
+      <button class="action" onclick="like(this)">♡ Like</button>
+    </div>
+
+    <div class="short">
+      <h3>Comedy 😂</h3>
+      <p>Comedy creator</p>
+      <button class="action" onclick="like(this)">♡ Like</button>
+    </div>
+  </div>
+</section>
+
+<!-- 3. POSTING SECTION -->
+<section id="posting" class="section">
+  <h2>Create a Post</h2>
+
+  <div class="postbox">
+    <textarea id="caption"
+      placeholder="What would you like to share?"></textarea>
+
+    <br>
+
+    <input type="file" id="media"
+      accept="image/*,video/*">
+
+    <br>
+
+    <img id="preview" style="display:none">
+
+    <video id="videoPreview"
+      controls style="display:none;width:100%;margin-top:12px">
+    </video>
+
+    <br>
+    <button class="action" onclick="createPost()">
+      Publish Post
+    </button>
+  </div>
+
+  <h2>Recent Posts</h2>
+  <div id="posts"></div>
+</section>
+
+<!-- 4. GAMING SECTION -->
+<section id="gaming" class="section">
+  <h2>Gaming Zone 🎮</h2>
+  <p>Discover gaming entertainment.</p>
+
+  <div class="game">
+    <h3>🎮 Gaming Videos</h3>
+    <p>Watch gaming content and gameplay.</p>
+  </div>
+
+  <div class="game">
+    <h3>🏆 Gaming Challenges</h3>
+    <p>Discover exciting gaming challenges.</p>
+  </div>
+
+  <div class="game">
+    <h3>🔥 Trending Games</h3>
+    <p>Explore gaming communities and creators.</p>
+  </div>
+
+  <div class="game">
+    <h3>🎥 Live Gaming</h3>
+    <p>Gaming live-stream discovery.</p>
+  </div>
+</section>
+
+<!-- 5. PROFILE SECTION -->
+<section id="profile" class="section">
+  <div class="profile">
+    <div class="avatar">👤</div>
+    <h2>My Profile</h2>
+    <p>ViewTube Creator</p>
+
+    <div class="stats">
+      <div><strong id="postCount">0</strong><p>Posts</p></div>
+      <div><strong>0</strong><p>Followers</p></div>
+      <div><strong>0</strong><p>Following</p></div>
+    </div>
+
+    <button class="action"
+      onclick="alert('Profile editing will be added next!')">
+      Edit Profile
+    </button>
+  </div>
+</section>
+
+<!-- BOTTOM NAVIGATION -->
+<nav>
+  <button class="selected" onclick="showSection('all',this)">
+    <span>🏠</span>All
+  </button>
+
+  <button onclick="showSection('shorts',this)">
+    <span>▶</span>Shorts
+  </button>
+
+  <button onclick="showSection('posting',this)">
+    <span>➕</span>Posting
+  </button>
+
+  <button onclick="showSection('gaming',this)">
+    <span>🎮</span>Gaming
+  </button>
+
+  <button onclick="showSection('profile',this)">
+    <span>👤</span>Profile
+  </button>
+</nav>
+
+<script>
+
+function showSection(id,button) {
+  document.querySelectorAll('.section')
+    .forEach(s => s.classList.remove('active'));
+
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('nav button')
+    .forEach(b => b.classList.remove('selected'));
+
+  if(button) button.classList.add('selected');
+  else {
+    document.querySelectorAll('nav button')
+      .forEach(b => {
+        if(b.getAttribute('onclick').includes(id))
+          b.classList.add('selected');
+      });
+  }
+
+  window.scrollTo(0,0);
+}
+
+function like(button) {
+  if(button.innerText.includes('♡')) {
+    button.innerText = '♥ Liked';
+  } else {
+    button.innerText = '♡ Like';
+  }
+}
+
+const media = document.getElementById('media');
+
+media.addEventListener('change', function() {
+  const file = this.files[0];
+  if(!file) return;
+
+  const url = URL.createObjectURL(file);
+
+  const image = document.getElementById('preview');
+  const video = document.getElementById('videoPreview');
+
+  image.style.display = 'none';
+  video.style.display = 'none';
+
+  if(file.type.startsWith('image/')) {
+    image.src = url;
+    image.style.display = 'block';
+  }
+
+  if(file.type.startsWith('video/')) {
+    video.src = url;
+    video.style.display = 'block';
+  }
+});
+
+let count = 0;
+
+function createPost() {
+  const caption = document.getElementById('caption');
+  const file = media.files[0];
+
+  if(!caption.value.trim() && !file) {
+    alert('Write something or select a file first!');
+    return;
+  }
+
+  const post = document.createElement('div');
+  post.className = 'post';
+
+  const heading = document.createElement('h3');
+  heading.textContent = '👤 ViewTube Creator';
+
+  const text = document.createElement('p');
+  text.textContent = caption.value;
+
+  post.appendChild(heading);
+  post.appendChild(text);
+
+  if(file) {
+    const url = URL.createObjectURL(file);
+    let element;
+
+    if(file.type.startsWith('video/')) {
+      element = document.createElement('video');
+      element.controls = true;
+    } else {
+      element = document.createElement('img');
+    }
+
+    element.src = url;
+    element.style.width = '100%';
+    element.style.marginTop = '12px';
+    element.style.borderRadius = '10px';
+
+    post.appendChild(element);
+  }
+
+  document.getElementById('posts').prepend(post);
+
+  count++;
+  document.getElementById('postCount').textContent = count;
+
+  caption.value = '';
+  media.value = '';
+
+  document.getElementById('preview').style.display = 'none';
+  document.getElementById('videoPreview').style.display = 'none';
+
+  alert('Your post was added to this page!');
+}
+
+function searchContent() {
+  const query = document.getElementById('search')
+    .value.toLowerCase();
+
+  document.querySelectorAll('#movieGrid .card')
+    .forEach(card => {
+      card.style.display =
+        card.innerText.toLowerCase().includes(query)
+        ? '' : 'none';
+    });
+}
+
+</script>
+
+</body>
+  </html>
+      
